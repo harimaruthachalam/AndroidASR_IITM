@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.kailashdabhi:om-recorder:1.1.0'
+    compile 'com.cleveroad:audiovisualization:1.0.0'
+    compile files('httpclient-4.5.10.jar')
+    compile files('httpcore-4.4.12.jar')
+    compile files('httpclient-cache-4.5.10.jar')
+    compile files('httpclient-win-4.5.10.jar')
+    //    compile files('httpclient-osgi-4.5.10.jar')
+    //    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
+    compile files('httpmime-4.3.1.jar')
+}
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
+}
