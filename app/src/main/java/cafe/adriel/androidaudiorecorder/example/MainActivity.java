@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setBackgroundDrawable(
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         Util.requestPermission(this, Manifest.permission.RECORD_AUDIO);
         Util.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         Util.requestPermission(this, Manifest.permission.INTERNET);
+        recordAudio();
     }
 
     @Override
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Audio was not recorded", Toast.LENGTH_SHORT).show();
             }
+            recordAudio();
         }
     }
 
@@ -94,7 +96,25 @@ public class MainActivity extends AppCompatActivity {
         AndroidAudioRecorder.with(this)
                 // Required
                 .setFilePath(AUDIO_FILE_PATH)
-                .setColor(ContextCompat.getColor(this, R.color.recorder_bg))
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setRequestCode(REQUEST_RECORD_AUDIO)
+
+                // Optional
+                .setSource(AudioSource.MIC)
+                .setChannel(AudioChannel.STEREO)
+                .setSampleRate(AudioSampleRate.HZ_48000)
+                .setAutoStart(false)
+                .setKeepDisplayOn(true)
+
+                // Start recording
+                .record();
+    }
+
+    public void recordAudio() {
+        AndroidAudioRecorder.with(this)
+                // Required
+                .setFilePath(AUDIO_FILE_PATH)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 .setRequestCode(REQUEST_RECORD_AUDIO)
 
                 // Optional
@@ -146,8 +166,9 @@ public class MainActivity extends AppCompatActivity {
             reqEntity.setBoundary(boundary);
 //            reqEntity.setContentType(ContentType.MULTIPART_FORM_DATA);
 //            reqEntity.addPart("file", bab);
+            String lang = AndroidAudioRecorder.with(this).getLanguage();
             reqEntity.addPart("file", new FileBody(file, ContentType.MULTIPART_FORM_DATA,"file.wav"));
-            reqEntity.addPart("language", new StringBody("tamil", ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("language", new StringBody(lang, ContentType.MULTIPART_FORM_DATA));
             HttpEntity multiPartEntity = reqEntity.build();
             postRequest.setEntity(multiPartEntity);
             HttpResponse response = httpClient.execute(postRequest);
@@ -171,113 +192,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(e.getClass().getName(), e.getMessage());
         }
         return "";
-    }
-
-    public String multipartRequest(String urlTo, String post, String filepath, String filefield) throws ParseException, IOException {
-        HttpURLConnection connection = null;
-        DataOutputStream outputStream = null;
-        InputStream inputStream = null;
-
-        String twoHyphens = "--";
-        String boundary =  "*****"+Long.toString(System.currentTimeMillis())+"*****";
-        String lineEnd = "\r\n";
-
-        String result = "";
-
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1*1024*1024;
-
-        String[] q = filepath.split("/");
-        int idx = q.length - 1;
-
-        try {
-            File file = new File(filepath);
-            FileInputStream fileInputStream = new FileInputStream(file);
-
-            URL url = new URL(urlTo);
-            connection = (HttpURLConnection) url.openConnection();
-
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("User-Agent", "Android Multipart HTTP Client 1.0");
-            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
-
-            outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"" + filefield + "\"; filename=\"" + q[idx] +"\"" + lineEnd);
-            outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
-            outputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
-            outputStream.writeBytes(lineEnd);
-
-            bytesAvailable = fileInputStream.available();
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
-
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            while(bytesRead > 0) {
-                outputStream.write(buffer, 0, bufferSize);
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            }
-
-            outputStream.writeBytes(lineEnd);
-
-            // Upload POST Data
-            String[] posts = post.split("&");
-            int max = posts.length;
-            for(int i=0; i<max;i++) {
-                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                String[] kv = posts[i].split("=");
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + kv[0] + "\"" + lineEnd);
-                outputStream.writeBytes("Content-Type: text/plain"+lineEnd);
-                outputStream.writeBytes(lineEnd);
-                outputStream.writeBytes(kv[1]);
-                outputStream.writeBytes(lineEnd);
-            }
-
-            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            inputStream = connection.getInputStream();
-            result = this.convertStreamToString(inputStream);
-
-            fileInputStream.close();
-            inputStream.close();
-            outputStream.flush();
-            outputStream.close();
-
-            return result;
-        } catch(Exception e) {
-            Log.e("MultipartRequest","Multipart Form Upload Error");
-            e.printStackTrace();
-            return "error";
-        }
-    }
-
-    private String convertStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
     }
 
 }

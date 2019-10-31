@@ -11,6 +11,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioSource;
 
 public class Util {
     private static final Handler HANDLER = new Handler();
+    public static String language;
 
     private Util() {
     }

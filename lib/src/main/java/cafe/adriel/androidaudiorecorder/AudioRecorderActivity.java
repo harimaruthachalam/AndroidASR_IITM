@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
@@ -58,6 +60,7 @@ public class AudioRecorderActivity extends AppCompatActivity
     private ImageButton restartView;
     private ImageButton recordView;
     private ImageButton playView;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +90,9 @@ public class AudioRecorderActivity extends AppCompatActivity
         }
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setHomeButtonEnabled(true);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setElevation(0);
             getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(Util.getDarkerColor(color)));
@@ -115,6 +118,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         restartView = (ImageButton) findViewById(R.id.restart);
         recordView = (ImageButton) findViewById(R.id.record);
         playView = (ImageButton) findViewById(R.id.play);
+        spinner = (Spinner) findViewById(R.id.spinner);
 
         contentLayout.setBackgroundColor(Util.getDarkerColor(color));
         contentLayout.addView(visualizerView, 0);
@@ -132,12 +136,17 @@ public class AudioRecorderActivity extends AppCompatActivity
             recordView.setColorFilter(Color.BLACK);
             playView.setColorFilter(Color.BLACK);
         }
+
+//        Toast.makeText(this, Util.language, Toast.LENGTH_LONG).show();
+        if (Util.language != "") {
+            selectValue(spinner, Util.language);
+        }
     }
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(autoStart && !isRecording){
+        if(autoStart && !isRecording) {
             toggleRecording(null);
         }
     }
@@ -208,6 +217,7 @@ public class AudioRecorderActivity extends AppCompatActivity
 
     private void selectAudio() {
         stopRecording();
+        Util.language = String.valueOf(spinner.getSelectedItem());
         setResult(RESULT_OK);
         finish();
     }
@@ -295,8 +305,8 @@ public class AudioRecorderActivity extends AppCompatActivity
         }
         statusView.setText(R.string.aar_paused);
         statusView.setVisibility(View.VISIBLE);
-        restartView.setVisibility(View.VISIBLE);
-        playView.setVisibility(View.VISIBLE);
+        restartView.setVisibility(View.INVISIBLE);
+        playView.setVisibility(View.INVISIBLE);
         recordView.setImageResource(R.drawable.aar_ic_rec);
         playView.setImageResource(R.drawable.aar_ic_play);
 
@@ -310,6 +320,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         }
 
         stopTimer();
+        selectAudio();
     }
 
     private void stopRecording(){
@@ -415,5 +426,14 @@ public class AudioRecorderActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    private void selectValue(Spinner spinner, String value) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(value)) {
+                spinner.setSelection(i);
+                break;
+            }
+        }
     }
 }

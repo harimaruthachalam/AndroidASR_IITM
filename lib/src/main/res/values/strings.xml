@@ -4,4 +4,18 @@
     <string name="aar_paused">Paused</string>
     <string name="aar_recording">Recording</string>
     <string name="aar_playing">Playing</string>
+    <string name="lang_prompt">Choose a language</string>
+    <string-array name="lang_arrays">
+        <item>hindi</item>
+        <item>tamil</item>
+        <item>gujarati</item>
+        <item>telugu</item>
+        <item>english</item>
+        <item>NPTEL_2000</item>
+        <item>e2e_NPTEL_new</item>
+        <item>e2e_eng_trans</item>
+        <item>e2e_hin_trans</item>
+        <item>e2e_universal_trans</item>
+        <item>Tanglish_trans</item>
+    </string-array>
 </resources>

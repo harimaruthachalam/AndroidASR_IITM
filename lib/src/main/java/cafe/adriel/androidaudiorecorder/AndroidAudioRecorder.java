@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.widget.Spinner;
 
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
@@ -31,6 +32,8 @@ public class AndroidAudioRecorder {
     private int requestCode = 0;
     private boolean autoStart = false;
     private boolean keepDisplayOn = false;
+
+    private Spinner spinner;
 
     private AndroidAudioRecorder(Activity activity) {
         this.activity = activity;
@@ -110,6 +113,10 @@ public class AndroidAudioRecorder {
         intent.putExtra(EXTRA_AUTO_START, autoStart);
         intent.putExtra(EXTRA_KEEP_DISPLAY_ON, keepDisplayOn);
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    public String getLanguage(){
+        return Util.language;
     }
 
 }

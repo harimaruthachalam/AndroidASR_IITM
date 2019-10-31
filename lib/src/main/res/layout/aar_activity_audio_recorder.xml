@@ -34,6 +34,13 @@
             android:fontFamily="sans-serif-thin"
             android:text="00:00:00"/>
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/lang_arrays"
+            android:prompt="@string/lang_prompt"/>
+
     </LinearLayout>
 
     <RelativeLayout
