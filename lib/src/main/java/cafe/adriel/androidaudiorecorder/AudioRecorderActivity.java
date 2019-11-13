@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -54,6 +55,7 @@ public class AudioRecorderActivity extends AppCompatActivity
     private boolean isRecording;
 
     private RelativeLayout contentLayout;
+    private RelativeLayout progressLayout;
     private GLAudioVisualizationView visualizerView;
     private TextView statusView;
     private TextView timerView;
@@ -61,6 +63,7 @@ public class AudioRecorderActivity extends AppCompatActivity
     private ImageButton recordView;
     private ImageButton playView;
     private Spinner spinner;
+    private EditText edvResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             sampleRate = (AudioSampleRate) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_SAMPLE_RATE);
             color = getIntent().getIntExtra(AndroidAudioRecorder.EXTRA_COLOR, Color.BLACK);
             autoStart = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_AUTO_START, false);
-            keepDisplayOn = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_KEEP_DISPLAY_ON, false);
+            keepDisplayOn = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_KEEP_DISPLAY_ON, true);
         }
 
         if(keepDisplayOn){
@@ -92,6 +95,9 @@ public class AudioRecorderActivity extends AppCompatActivity
         if (getSupportActionBar() != null) {
 //            getSupportActionBar().setHomeButtonEnabled(true);
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setElevation(0);
             getSupportActionBar().setBackgroundDrawable(
@@ -119,6 +125,8 @@ public class AudioRecorderActivity extends AppCompatActivity
         recordView = (ImageButton) findViewById(R.id.record);
         playView = (ImageButton) findViewById(R.id.play);
         spinner = (Spinner) findViewById(R.id.spinner);
+        edvResponse = (EditText) findViewById(R.id.edvResponse);
+        progressLayout = (RelativeLayout) findViewById(R.id.loadingPanel);
 
         contentLayout.setBackgroundColor(Util.getDarkerColor(color));
         contentLayout.addView(visualizerView, 0);
@@ -140,6 +148,10 @@ public class AudioRecorderActivity extends AppCompatActivity
 //        Toast.makeText(this, Util.language, Toast.LENGTH_LONG).show();
         if (Util.language != "") {
             selectValue(spinner, Util.language);
+        }
+        if (Util.response != ""){
+            edvResponse.setTextSize(24);
+            edvResponse.setText(Util.response);
         }
     }
 
@@ -229,6 +241,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             public void run() {
                 if (isRecording) {
                     pauseRecording();
+                    progressLayout.setVisibility(View.VISIBLE);
                 } else {
                     resumeRecording();
                 }

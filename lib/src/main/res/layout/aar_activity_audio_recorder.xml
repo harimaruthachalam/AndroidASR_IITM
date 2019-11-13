@@ -34,6 +34,13 @@
             android:fontFamily="sans-serif-thin"
             android:text="00:00:00"/>
 
+        <TextView
+            android:id="@+id/tvLangSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10pt"
+            android:text="@string/lang_prompt" />
+
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
@@ -41,8 +48,35 @@
             android:entries="@array/lang_arrays"
             android:prompt="@string/lang_prompt"/>
 
+        <EditText
+            android:id="@+id/edvResponse"
+            android:layout_width="match_parent"
+            android:layout_height="127dp"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="Record and speak something!"
+            android:inputType="textMultiLine"
+            android:selectAllOnFocus="false"
+            android:textSize="10sp" />
+
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="invisible">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/aar_footer_height"

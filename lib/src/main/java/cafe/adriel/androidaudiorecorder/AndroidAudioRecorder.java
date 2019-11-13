@@ -119,4 +119,8 @@ public class AndroidAudioRecorder {
         return Util.language;
     }
 
+    public void setResponse(String response){
+        Util.response = response;
+    }
+
 }

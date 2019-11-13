@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark)));
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+//            getSupportActionBar().setDisplayUseLogoEnabled(true);
         }
 
         Util.requestPermission(this, Manifest.permission.RECORD_AUDIO);
@@ -186,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             String output = s.toString();
             JSONObject jsonObject = new JSONObject(output);
             String outputText = jsonObject.getString("recognised_text");
+            AndroidAudioRecorder.with(this).setResponse(outputText);
             return outputText;
         } catch (Exception e) {
             // handle exception here
