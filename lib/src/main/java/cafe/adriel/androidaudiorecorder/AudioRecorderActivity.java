@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -232,6 +233,19 @@ public class AudioRecorderActivity extends AppCompatActivity
         Util.language = String.valueOf(spinner.getSelectedItem());
         setResult(RESULT_OK);
         finish();
+    }
+
+    public boolean onTouch(View view, MotionEvent event) {
+
+        if (view.getId() == R.id.edvResponse) {
+            view.getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction()&MotionEvent.ACTION_MASK){
+                case MotionEvent.ACTION_UP:
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+        }
+        return false;
     }
 
     public void toggleRecording(View v) {

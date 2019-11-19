@@ -80,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_RECORD_AUDIO) {
             if (resultCode == RESULT_OK) {
                 try {
-                    String ret = executeMultipartPost();
+                    String ret = executeMultipartPost().trim();
+                    if (isStringOnlyAlphabet(ret) == true){
+                        ret = captialize(ret);
+                    }
+                    AndroidAudioRecorder.with(this).setResponse(ret);
                     Toast.makeText(this, ret, Toast.LENGTH_LONG).show();
 
                 }
@@ -189,13 +193,40 @@ public class MainActivity extends AppCompatActivity {
             String output = s.toString();
             JSONObject jsonObject = new JSONObject(output);
             String outputText = jsonObject.getString("recognised_text");
-            AndroidAudioRecorder.with(this).setResponse(outputText);
             return outputText;
         } catch (Exception e) {
             // handle exception here
             Log.e(e.getClass().getName(), e.getMessage());
         }
         return "";
+    }
+
+    public static boolean isStringOnlyAlphabet(String str)
+    {
+        return ((str != null)
+                && (!str.equals(""))
+                && (str.matches("^[a-z A-Z.!]*$")));
+    }
+
+    public static String captialize(String text) {
+
+//        String text = "this is a.line is. over";
+
+        text = text.toLowerCase();
+
+        int pos = 0;
+        boolean capitalize = true;
+        StringBuilder sb = new StringBuilder(text);
+        while (pos < sb.length()) {
+            if (sb.charAt(pos) == '.' ||sb.charAt(pos) == '!') {
+                capitalize = true;
+            } else if (capitalize && !Character.isWhitespace(sb.charAt(pos))) {
+                sb.setCharAt(pos, Character.toUpperCase(sb.charAt(pos)));
+                capitalize = false;
+            }
+            pos++;
+        }
+        return(sb.toString());
     }
 
 }
