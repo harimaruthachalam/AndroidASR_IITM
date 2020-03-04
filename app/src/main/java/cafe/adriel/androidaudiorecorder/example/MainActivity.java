@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] data = out.toByteArray();
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost postRequest = new HttpPost(
-                    "https://www.iitm.ac.in/speech/lib/vocal_render_with_rec_opt.php");
+                    "https://www.iitm.ac.in/speech/asr_new/lib/vocal_render_with_rec_opt.php");
 //            postRequest.addHeader(new BasicHeader("Content-Type", ContentType.MULTIPART_FORM_DATA.toString()));
             postRequest.addHeader(new BasicHeader("Accept", ContentType.APPLICATION_JSON.toString()));
             File file = new File(AUDIO_FILE_PATH);

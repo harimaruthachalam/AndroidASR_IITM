@@ -38,8 +38,8 @@
             android:id="@+id/tvLangSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10pt"
-            android:text="@string/lang_prompt" />
+            android:text="@string/lang_prompt"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spinner"
